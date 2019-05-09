@@ -1,0 +1,1 @@
+PHP Source code of uFR Online (NFC Reader with wifi, ethernet) example. This examples asumed that uFR Online is in Master mode and sends HTTP request to PHP script. Script sends back uFR API command.
