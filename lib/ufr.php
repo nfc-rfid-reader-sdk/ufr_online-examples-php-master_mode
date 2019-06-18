@@ -1,4 +1,5 @@
 <?php
+define("ONLINE", 0);
 define("UFR1", 1);
 define("UFR2", 2);
 define("BARRIER", 3);
@@ -10,6 +11,7 @@ class Ufr
     private $cardId;
     private $reader;
 
+	private $ufr0Response;
     private $ufr1Response;
     private $ufr2Response;
     private $ufr3Response;
@@ -20,6 +22,7 @@ class Ufr
             $this->serialNumber = $_POST["SN"];
             $this->cardId = $_POST["UID"];
             $this->reader = $_POST["online"];
+			$this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";
@@ -27,6 +30,7 @@ class Ufr
             $this->serialNumber = "0";
             $this->cardId = "0";
             $this->reader = "0";
+			$this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";
@@ -50,7 +54,19 @@ class Ufr
 
     protected function addResponse($readerNumber, $response)
     {
-         if($readerNumber == 1)
+		if($readerNumber == 0)
+         {
+             if($this->ufr0Response == "0")
+             {
+                $this->ufr0Response = $this->byteArray2Hex($response);    
+             }
+             else
+             {
+                $this->ufr0Response .= " ";
+                $this->ufr0Response .= $this->byteArray2Hex($response);
+             }   
+         }
+         else if($readerNumber == 1)
          {
              if($this->ufr1Response == "0")
              {
@@ -107,7 +123,7 @@ class Ufr
     function sendResponse()
     {
   
-        echo $this->ufr1Response . "\n" . $this->ufr2Response . "\n" . $this->ufr3Response;
+        echo $this->ufr0Response . "\n" . $this->ufr1Response . "\n" . $this->ufr2Response . "\n" . $this->ufr3Response;
     }
 
     function readerUISignal($readerNumber, $light, $beep)
@@ -138,7 +154,7 @@ class Ufr
     }
 
     function ledRingRGB($readerNumber, $red, $green, $blue)
-    {
+    {		
         $data = array(0x55, 0x72, 0xAA, 0x49, 0x48, 0x00, 0x93);
         for ($x = 0; $x < 72; $x+=3) {
             $data[$x+7] = $green;
@@ -159,6 +175,45 @@ class Ufr
        
         } 
         $data[79] =  $this->calculateChecksum($array, 72);   
+           
+        $this->addResponse($readerNumber, $data);
+        return 1;
+    }
+	
+	function onlineRGB($readerNumber, $red, $green, $blue, $duration)
+    {		
+        $data = array(0x55, 0xF8, 0xAA, 0x07, 0x00, 0x00, 0x07);
+		$data[4] = $duration & 0xFF;
+		$data[5] = $duration >> 8;
+		$data[6] =  $this->calculateChecksum($data, 6);   
+
+        for ($x = 0; $x < 6; $x+=3) {
+            $data[$x+7] = $red;
+            $data[$x+8] = $green;
+            $data[$x+9] = $blue;
+        } 
+        $data[13] = 0x07;      
+           
+        $this->addResponse($readerNumber, $data);
+        return 1;
+    }
+	
+	function onlineRGBDual($readerNumber, $red, $green, $blue, $red1, $green1, $blue1, $duration)
+    {		
+        $data = array(0x55, 0xF8, 0xAA, 0x07, 0x00, 0x00, 0x07);
+		$data[4] = $duration & 0xFF;
+		$data[5] = $duration >> 8;
+		$data[6] =  $this->calculateChecksum($data, 6);   
+
+        $data[7] = $red;
+        $data[8] = $green;
+        $data[9] = $blue;
+		
+		$data[10] = $red1;
+        $data[11] = $green1;
+        $data[12] = $blue1;
+        
+        $data[13] = 0x07;      
            
         $this->addResponse($readerNumber, $data);
         return 1;
