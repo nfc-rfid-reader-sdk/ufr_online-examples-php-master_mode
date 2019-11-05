@@ -3,8 +3,8 @@ define("ONLINE", 0);
 define("UFR1", 1);
 define("UFR2", 2);
 define("BARRIER", 3);
-define("ACT1", 1);
-define("ACT2", 2);
+define("ACT1", 2);
+define("ACT2", 1);
 class Ufr
 {
     private $serialNumber;
