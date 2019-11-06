@@ -136,6 +136,16 @@ class Ufr
         return 1;
     }
     
+    function setTemplate($readerNumber, $template)
+    {
+        $data = array(0x55, 0x26, 0xAA, 0x00, 0xFF, 0xFF, 0xFF);
+        $data[4] = $template;
+        $data[5] = 0;
+        $data[6] = $this->calculateChecksum($data, 6);
+        $this->addResponse($readerNumber, $data);
+        return 1;
+    }
+    
     function lockOpen($readerNumber, $lockNumber, $duration)
     {
         $data = array(0x55, 0x60, 0xAA, 0x00, 0xFF, 0xFF, 0xFF);
