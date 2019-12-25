@@ -10,7 +10,9 @@ class Ufr
     private $serialNumber;
     private $cardId;
     private $reader;
-
+    private $onlineSerialNumber;
+    private $data;
+    
 	private $ufr0Response;
     private $ufr1Response;
     private $ufr2Response;
@@ -22,14 +24,31 @@ class Ufr
             $this->serialNumber = $_POST["SN"];
             $this->cardId = $_POST["UID"];
             $this->reader = $_POST["online"];
+            $this->onlineSerialNumber = $_POST["OSN"];
+            $this->data = "";
 			$this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";
-        } else {
+        }
+        else if(isset($_POST["OSN"]) && !empty($_POST["OSN"]) && isset($_POST["DATA"]) && !empty($_POST["DATA"]))
+        {
             $this->serialNumber = "0";
             $this->cardId = "0";
             $this->reader = "0";
+            $this->onlineSerialNumber = $_POST["OSN"];
+            $this->data = $_POST["DATA"];
+			$this->ufr0Response = "0";
+            $this->ufr1Response = "0";
+            $this->ufr2Response = "0";
+            $this->ufr3Response = "0";           
+        }
+        else {
+            $this->serialNumber = "0";
+            $this->cardId = "0";
+            $this->reader = "0";
+            $this->onlineSerialNumber = "";
+            $this->data = "";
 			$this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
@@ -118,6 +137,23 @@ class Ufr
     function getReader()
     {
         return $this->reader;
+    }
+    
+    function getData()
+    {
+        return $this->data;
+    }
+    
+    function isCard()
+    {
+       if($this->data == "")
+       {
+           return true;
+       }
+       else
+       {
+           return false;
+       }
     }
 
     function sendResponse()
