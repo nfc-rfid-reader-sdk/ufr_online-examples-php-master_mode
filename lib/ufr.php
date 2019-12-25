@@ -20,16 +20,18 @@ class Ufr
 
     public function __construct()
     {
+
         if (isset($_POST["SN"]) && !empty($_POST["SN"]) && isset($_POST["UID"]) && !empty($_POST["UID"]) && isset($_POST["online"]) && !empty($_POST["online"])) {
             $this->serialNumber = $_POST["SN"];
             $this->cardId = $_POST["UID"];
             $this->reader = $_POST["online"];
             $this->onlineSerialNumber = $_POST["OSN"];
-            $this->data = "";
-			$this->ufr0Response = "0";
+            $this->data = "0";
+	    $this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";
+
         }
         else if(isset($_POST["OSN"]) && !empty($_POST["OSN"]) && isset($_POST["DATA"]) && !empty($_POST["DATA"]))
         {
@@ -38,21 +40,23 @@ class Ufr
             $this->reader = "0";
             $this->onlineSerialNumber = $_POST["OSN"];
             $this->data = $_POST["DATA"];
-			$this->ufr0Response = "0";
+	    $this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
-            $this->ufr3Response = "0";           
+            $this->ufr3Response = "0";       
+ 
         }
         else {
             $this->serialNumber = "0";
             $this->cardId = "0";
             $this->reader = "0";
-            $this->onlineSerialNumber = "";
-            $this->data = "";
-			$this->ufr0Response = "0";
+            $this->onlineSerialNumber = "0";
+            $this->data = "0";
+	    $this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";
+  	
         }
     }
 
@@ -143,12 +147,18 @@ class Ufr
     {
         return $this->data;
     }
+
+    function getInputs()
+    {
+	$json = json_decode($this->data, true);
+        return array_values($json["Input"]);
+    }
     
     function isCard()
     {
-       if($this->data == "")
+	if(strcmp($this->data, '0') == 0)
        {
-           return true;
+	  return true;
        }
        else
        {
