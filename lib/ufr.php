@@ -132,6 +132,11 @@ class Ufr
     {
         return $this->serialNumber;
     }
+    
+        function getOnlineSerialNumber()
+    {
+        return $this->onlineSerialNumber;
+    }
 
     function getCardId()
     {
