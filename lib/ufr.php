@@ -25,9 +25,16 @@ class Ufr
             $this->serialNumber = $_POST["SN"];
             $this->cardId = $_POST["UID"];
             $this->reader = $_POST["online"];
-            $this->onlineSerialNumber = $_POST["OSN"];
+            if( isset($_POST['OSN']) )
+            {
+                $this->onlineSerialNumber = $_POST["OSN"];
+            }
+            else
+            {
+                $this->onlineSerialNumber = ""; 
+            }
             $this->data = "0";
-	    $this->ufr0Response = "0";
+	        $this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";
@@ -38,9 +45,16 @@ class Ufr
             $this->serialNumber = "0";
             $this->cardId = "0";
             $this->reader = "0";
-            $this->onlineSerialNumber = $_POST["OSN"];
+            if( isset($_POST["OSN"]) )
+            {
+                $this->onlineSerialNumber = $_POST["OSN"];
+            }
+            else
+            {
+                $this->onlineSerialNumber = ""; 
+            }
             $this->data = $_POST["DATA"];
-	    $this->ufr0Response = "0";
+	        $this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";       
@@ -52,7 +66,7 @@ class Ufr
             $this->reader = "0";
             $this->onlineSerialNumber = "0";
             $this->data = "0";
-	    $this->ufr0Response = "0";
+	        $this->ufr0Response = "0";
             $this->ufr1Response = "0";
             $this->ufr2Response = "0";
             $this->ufr3Response = "0";
@@ -155,15 +169,15 @@ class Ufr
 
     function getInputs()
     {
-	$json = json_decode($this->data, true);
+	    $json = json_decode($this->data, true);
         return array_values($json["Input"]);
     }
     
     function isCard()
     {
-	if(strcmp($this->data, '0') == 0)
+	   if(strcmp($this->data, '0') == 0)
        {
-	  return true;
+	       return true;
        }
        else
        {
